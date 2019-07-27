@@ -12,6 +12,8 @@ namespace Plant.Web
 {
     public class Program
     {
+        static string[] urls = { "http://*:8081" }; //, "https://*:5001"
+
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -19,6 +21,7 @@ namespace Plant.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls(urls)
                 .UseStartup<Startup>();
     }
 }

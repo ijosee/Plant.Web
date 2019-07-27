@@ -2,7 +2,43 @@
     ViewData["Title"] = "Home Page";
 }
 
+<link rel="stylesheet" href="~/lib/jquery-datepicker/jquery.datetimepicker.min.css" />
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<div class="jumbotron">
+    <h1 class="display-4">HIGROMETER</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <input style="width:100%" type="text" id="daterangeHigrometer" />
+    <canvas id="myChartSensor"></canvas>
+</div>
+<div class="jumbotron">
+    <h1 class="display-4">SERVO</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <input style="width:100%" type="text" id="daterangeServo" />
+    <canvas id="myChartServo"></canvas>
+</div>
+<div class="jumbotron">
+    <h1 class="display-4">LIGHT</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <input style="width:100%" type="text" id="daterangeLight" />
+    <canvas id="myChartLight"></canvas>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<script src="~/js/site.js"></script>
+
+
