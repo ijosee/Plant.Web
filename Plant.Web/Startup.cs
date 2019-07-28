@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Plant.Web {
     public class Startup {
@@ -17,6 +18,7 @@ namespace Plant.Web {
         }
 
         public IConfiguration Configuration { get; }
+        public ILogger Logger { get; }
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,6 +35,10 @@ namespace Plant.Web {
                         builder.WithOrigins ().AllowAnyOrigin ();
                     });
             });
+
+            services.AddSingleton<IConfiguration> (Configuration);
+            //services.AddSingleton<ILogger> (Logger);
+            services.AddHttpClient ();
 
             services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_2);
         }

@@ -10,7 +10,7 @@
     @if (showBanner)
     {
     <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
-        Use this space to summarize your privacy and cookie use policy. <a asp-area="" asp-controller="Home" asp-action="Privacy">Learn More</a>.
+        We are good felas, don´t tracking you.
         <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
             <span aria-hidden="true">Accept</span>
         </button>
@@ -19,6 +19,7 @@
         (function () {
             var button = document.querySelector("#cookieConsent button[data-cookie-string]");
             button.addEventListener("click", function (event) {
+                document.getElementById('cookieConsent').remove();
                 document.cookie = button.dataset.cookieString;
             }, false);
         })();
