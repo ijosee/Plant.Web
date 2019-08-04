@@ -108,7 +108,7 @@ function renderServoChart(data) {
                 }
              }]
           },legend: {
-            display: true,
+            display: true
         }
        }
     });
