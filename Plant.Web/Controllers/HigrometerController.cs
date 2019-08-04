@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Plant.Web.Entities.Chart;
+using Plant.Web.Entities.Rq.DataTable;
+using Plant.Web.Entities.Rs.DataTable;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {
@@ -50,6 +53,33 @@ namespace Plant.Web.Controllers {
                 }
 
                 _logger.LogDebug ($"Datta getted . Total results {result?.Count}");
+            } catch (System.Exception ex) {
+                _logger.LogError (ex.Message);
+                throw;
+            }
+            return result;
+        }
+
+        [HttpGet]
+        public async Task<DataTableRs<HigrometerLogRs>> GetDataTable (DataTableRq request) {
+            var result = new DataTableRs<HigrometerLogRs> ();
+            try {
+                _logger.LogDebug ("Getting sensor data from api");
+                var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
+                _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                var httpRequest = new HttpRequestMessage (HttpMethod.Post,
+                    $"{baseUrl}api/Higrometer/GetAll");
+                httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
+
+                var client = _clientFactory.CreateClient ();
+                var response = await client.SendAsync (httpRequest);
+
+                if (response.IsSuccessStatusCode) {
+                    result = await response.Content.ReadAsAsync<DataTableRs<HigrometerLogRs>> ();
+                } else {
+                    result = null;
+                }
+
             } catch (System.Exception ex) {
                 _logger.LogError (ex.Message);
                 throw;

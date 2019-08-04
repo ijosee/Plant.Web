@@ -32,6 +32,42 @@ $(document).ready(function () {
 
    });
 
+   // did the trick !
+    $.noConflict();
+    $('#dataTable').DataTable({ 
+        processing: true,
+        serverSide: true,
+        order: [[0, 'desc']],
+        ajax: { 
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            url: "Servo/GetDataTable"
+        }, 
+        "columns": [ 
+        { "data": "id" }, 
+        { "data": "value" }, 
+        { "data": "degreesInitial" }, 
+        { "data": "degreesFinal" }, 
+        { "data": "openedTimeInSeconds" }, 
+        { "data": "timestamp" }],
+        drawCallback: function( settings ) {
+           var api = this.api();
+           currentDatatableData = api.rows( {page:'current'} ).data() ;
+           if(currentDatatableData != undefined && currentDatatableData.length > 0){
+                var data = {};
+
+                var firstElement = currentDatatableData[0];
+                var lastElement = currentDatatableData[currentDatatableData.length - 1];
+
+                data.from = moment(lastElement.timestamp).format('MM-DD-YYYY HH:mm:ss');
+                data.to = moment(firstElement.timestamp).format('MM-DD-YYYY HH:mm:ss');
+
+                data.sensorType = "Light";
+                getSensorData(data);    
+           }
+        }   
+    });
+
 });
 
 function renderServoChart(data) {
@@ -40,7 +76,7 @@ function renderServoChart(data) {
     var data = data.map(e => +e.y);
 
 
-    var ctx = document.getElementById("myChartSensor").getContext('2d');
+    var ctx = document.getElementById("myChartServo").getContext('2d');
     var chart = new Chart(ctx, {
        type: 'line',
        data: {
@@ -48,23 +84,16 @@ function renderServoChart(data) {
           datasets: [{
             label: 'Sensor measures',
             data: data,
-            borderWidth: 1,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
+            backgroundColor: "rgba(78, 223, 115, 0.05)",
+            borderColor: "rgba(78, 223, 115, 1)",
+            pointRadius: 3,
+            pointBackgroundColor: "rgba(78, 223, 115, 1)",
+            pointBorderColor: "rgba(78, 223, 115, 1)",
+            pointHoverRadius: 3,
+            pointHoverBackgroundColor: "rgba(78, 223, 115, 1)",
+            pointHoverBorderColor: "rgba(78, 223, 115, 1)",
+            pointHitRadius: 10,
+            pointBorderWidth: 2,
           }]
        },
        options: {
@@ -78,7 +107,9 @@ function renderServoChart(data) {
                    }
                 }
              }]
-          },
+          },legend: {
+            display: true,
+        }
        }
     });
 
