@@ -99,13 +99,15 @@ function renderHigrometerChart(data) {
              xAxes: [{
                 type: 'time',
                 time: {
-                   unit: 'hour',
+                   unit: 'minute',
                    displayFormats: {
                       hour: 'HH:mm'
                    }
                 }
              }]
-          },
+          },legend: {
+            display: true
+        }
        }
     });
 

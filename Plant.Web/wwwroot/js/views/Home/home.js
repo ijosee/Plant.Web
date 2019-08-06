@@ -8,10 +8,13 @@ var yLabels = {
 
 document.addEventListener("DOMContentLoaded", function(event) { 
 
-    getBlocksData();
-    getChartData();
-
     inicializeEvents();
+
+    setInterval(function() {
+        getBlocksData();
+        getChartData();
+    }, 2000);
+
 });
 
 // inicialize
@@ -19,8 +22,8 @@ function inicializeEvents(){
     $('#daterangeHigrometer').daterangepicker({
         opens: 'left',
         timePicker: true,
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(1, 'hour'),
+        startDate: moment().add(-2.5,'minute'),
+        endDate: moment().add(2.5, 'minute'),
         locale: {
           format: 'M/DD hh:mm A'
         }
@@ -61,8 +64,8 @@ function getBlocksData(){
 function getChartData(){
 
         var data = {};
-        data.from = moment().add(-0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
-        data.to = moment().add(0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
+        data.from = moment().add(-2.5, 'minute').format('MM/DD/YYYY HH:mm:ss');
+        data.to = moment().add(2.5, 'minute').format('MM/DD/YYYY HH:mm:ss');
 
         data.sensorType = "Higrometer";
         getSensorData(data);
@@ -135,19 +138,29 @@ function renderChart(datahigrometer, dataservo, datalight) {
                 pointBorderWidth: 2,
             }
         ]
-       },
+        },
        options: {
           scales: {
              xAxes: [{
                 type: 'time',
                 time: {
-                   unit: 'hour',
-                   displayFormats: {
-                      hour: 'HH:mm'
-                   }
-                }
+                   unit: 'minute'
+                },
+                distribution: 'linear'
              }]
-          }
+          },legend: {
+            display: true
+        },
+        animation: false,
+        //Boolean - If we want to override with a hard coded scale
+        scaleOverride: true,
+        //** Required if scaleOverride is true **
+        //Number - The number of steps in a hard coded scale
+        scaleSteps: 10,
+        //Number - The value jump in the hard coded scale
+        scaleStepWidth: 10,
+        //Number - The scale starting value
+        scaleStartValue: 0
        }
     });
 }

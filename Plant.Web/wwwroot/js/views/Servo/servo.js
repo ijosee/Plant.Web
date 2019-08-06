@@ -101,7 +101,7 @@ function renderServoChart(data) {
              xAxes: [{
                 type: 'time',
                 time: {
-                   unit: 'hour',
+                   unit: 'minute',
                    displayFormats: {
                       hour: 'HH:mm'
                    }
