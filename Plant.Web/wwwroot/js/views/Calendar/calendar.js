@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
-      plugins: [ 'interaction', 'dayGrid' ],
+      plugins: [ 'dayGrid', 'timeGrid', 'list', 'interaction' ],
       defaultDate: '2019-06-12',
       editable: true,
       eventLimit: true, // allow "more" link when too many events
