@@ -10,11 +10,11 @@
     <!-- common -->
     <link rel="stylesheet" type="text/css" href="~/css/site.css" />
     <!-- daterange -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="~/lib/daterangepicker/daterangepicker.css" />
     <!-- sb2 -->
     <link rel="stylesheet" type="text/css" href="~/lib/sb2/sb-admin-2.css" />
     <!-- fontawesome-free -->
-    <link rel="stylesheet" type="text/css" href="~/lib/vendor/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/lib/fontawesome-free/css/all.min.css" />
 </head>
 <body id="page-top">
 <!-- Page Wrapper -->
@@ -38,6 +38,16 @@
         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" asp-area="" asp-controller="Calendar" asp-action="Index">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Calendar</span></a>
       </li>
 
       <!-- Divider -->
@@ -250,20 +260,25 @@
     </div>
     
     <!-- jquery -->
-    <script src="~/lib/vendor/jquery/jquery.js"></script>
+    <!-- <script src="~/lib/vendor/jquery/jquery.js"></script> -->
+    <script src="~/lib/jquery/dist/jquery.js"></script>
     <!-- bootstrap -->
-    <script src="~/lib/vendor/bootstrap/js/bootstrap.bundle.min.js" ></script>
+    <!-- <script src="~/lib/vendor/bootstrap/js/bootstrap.bundle.min.js" ></script> -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js" ></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="~/lib/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- <script src="~/lib/vendor/jquery-easing/jquery.easing.min.js"></script> -->
+    <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
     <!-- sb2 -->
     <script src="~/lib/sb2/sb-admin-2.min.js"></script>
     <!-- moment -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <!-- <script src="~/lib/moment/moment.min.js"></script> -->
+    <script src="~/lib/moment/moment-with-locales.js"></script>
     <!-- chart -->
-    <script src="~/lib/vendor/chart.js/Chart.min.js"></script>
+    <script src="~/lib/chart.js/Chart.bundle.js"></script>
     <!-- daterange -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!-- <script type="text/javascript" src="~/lib/daterangepicker/daterangepicker.min.js"></script> -->
+    <script src="~/lib/daterangepicker/daterangepicker.js"></script>
     <!-- common -->
     <script src="~/js/site.js"></script>
     
