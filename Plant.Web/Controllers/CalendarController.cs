@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Plant.Web.Entities.Chart;
+using Plant.Web.Entities.Model;
 using Plant.Web.Entities.Rq.DataTable;
 using Plant.Web.Entities.Rs.DataTable;
-using Plant.Web.Entities.Rs.Rs.Light;
+using Plant.Web.Entities.Rs.Light;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {

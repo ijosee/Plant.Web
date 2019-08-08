@@ -1,5 +1,5 @@
 var datahigrometer ;
-var dataservo ;
+var datawatterpump ;
 var datalight ;
 
 var yLabels = {
@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     inicializeEvents();
 
-    setInterval(function() {
+     setInterval(function() {
         getBlocksData();
         getChartData();
-    }, 2000);
+     }, 2000);
 
 });
 
@@ -51,9 +51,9 @@ function getBlocksData(){
     $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
             $('#higrometer_total_data_number').html(data);
         });
-    data.sensorType = "Servo";
+    data.sensorType = "Watterpump";
     $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
-            $('#servo_total_data_number').html(data);
+            $('#watterpump_total_data_number').html(data);
         });
     data.sensorType = "Light";
     $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
@@ -71,16 +71,18 @@ function getChartData(){
         getSensorData(data);
 }
 
-function renderChart(datahigrometer, dataservo, datalight) {
-    var labels = datahigrometer.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
+function renderChart(datahigrometer, datawatterpump, datalight) {
 
     var dataYHigrometer ;
-    if(datahigrometer !== undefined && datahigrometer !== null)
-        dataYHigrometer= datahigrometer.map(e => +e.y);
+    var labels;
+    if(datahigrometer !== undefined && datahigrometer !== null){
+     labels = datahigrometer.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
+     dataYHigrometer= datahigrometer.map(e => +e.y);
+    }
 
-    var dataYServo ;
-    if(dataservo !== undefined && dataservo !== null)
-        dataYServo = dataservo.map(e => +e.y);
+    var dataYWatterpump ;
+    if(datawatterpump !== undefined && datawatterpump !== null)
+        dataYWatterpump = datawatterpump.map(e => +e.y);
     
     var dataYLight ;
     if(datalight !== undefined && datalight !== null)
@@ -108,8 +110,8 @@ function renderChart(datahigrometer, dataservo, datalight) {
                 pointBorderWidth: 2,
             },
             {
-                label: 'SERVO',
-                data: dataYServo,
+                label: 'WATTER PUMP',
+                data: dataYWatterpump,
                 fill: false,
                 backgroundColor: "rgba(78, 223, 115, 0.05)",
                 borderColor: "rgba(78, 223, 115, 1)",
@@ -179,14 +181,9 @@ function getSensorData(data){
         console.log("calling :"+url);
         }).done(function(HigrometerData){
 
-            console.log("done , datahigrometer ! ");
-            datahigrometer =  HigrometerData;
+             datahigrometer =  HigrometerData;
 
-            var data = {};
-            data.from = moment().add(-0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
-            data.to = moment().add(0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
-
-            data.sensorType = "Servo";
+            data.sensorType = "Watterpump";
             url = "";
             var sensorType = data.sensorType;
             if (data.from !== undefined && data.to !== undefined) {
@@ -195,16 +192,11 @@ function getSensorData(data){
                 url = 'Home/GetChartData?sensorType=' + sensorType;
             }
 
-            $.get(url, function () {
-                console.log("calling :"+url);
-                }).done(function(ServoData){
+             $.get(url, function () {
+                 console.log("calling :"+url);
+                 }).done(function(WatterpumpData){
 
-                    console.log("done , datahservo ! ");
-                    dataservo =  ServoData;
-
-                    var data = {};
-                    data.from = moment().add(-0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
-                    data.to = moment().add(0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
+                    datawatterpump =  WatterpumpData;
 
                     data.sensorType = "Light";
                     url = "";
@@ -221,10 +213,9 @@ function getSensorData(data){
 
                             console.log("done , datalight ! ");
                             datalight=  LightData;
-
-                            renderChart(datahigrometer, dataservo, datalight);
+                            renderChart(datahigrometer, datawatterpump, datalight);
 
                         });
-                });
+                 });
         });
   }

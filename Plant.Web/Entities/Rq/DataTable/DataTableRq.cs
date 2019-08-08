@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+
+// namespace Plant.Web.Entities.Rq.DataTable {
 namespace Plant.Web.Entities.Rq.DataTable {
-    /// <summary>
-    /// Representa la información que se recibe en cada llamada del DataTable.
-    /// </summary>
     public class DataTableRq {
 
         /// <summary>
@@ -21,7 +20,6 @@ namespace Plant.Web.Entities.Rq.DataTable {
         /// Tamaño de la pagina
         /// </summary>
         public int length { get; set; }
-        public string error { get; set; }
         /// <summary>
         /// Valor de la búsqueda
         /// </summary>

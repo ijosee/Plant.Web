@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,20 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Plant.Web.Entities.Chart;
+using Plant.Web.Entities.Model;
 using Plant.Web.Entities.Rq.DataTable;
 using Plant.Web.Entities.Rs.DataTable;
-using Plant.Web.Entities.Rs.Rs.Servo;
+using Plant.Web.Entities.Rs.WatterPump;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {
-    public class ServoController : Controller {
+    public class WatterPumpController : Controller {
 
         ILogger _logger;
         IConfiguration _configuration;
         IHttpClientFactory _clientFactory;
 
-        public ServoController (ILogger<ServoController> logger,
+        public WatterPumpController (ILogger<WatterPumpController> logger,
             IConfiguration configuration, IHttpClientFactory clientFactory
         ) {
             _logger = logger;
@@ -62,21 +60,21 @@ namespace Plant.Web.Controllers {
         }
 
         [HttpGet]
-        public async Task<DataTableRs<ServoLogRs>> GetDataTable (DataTableRq request) {
-            var result = new DataTableRs<ServoLogRs> ();
+        public async Task<DataTableRs<WatterPumpLogRs>> GetDataTable (DataTableRq request) {
+            var result = new DataTableRs<WatterPumpLogRs> ();
             try {
                 _logger.LogDebug ("Getting sensor data from api");
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
                 _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
                 var httpRequest = new HttpRequestMessage (HttpMethod.Post,
-                    $"{baseUrl}api/Servo/GetAll");
+                    $"{baseUrl}api/WatterPump/GetDataTable");
                 httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
 
                 var client = _clientFactory.CreateClient ();
                 var response = await client.SendAsync (httpRequest);
 
                 if (response.IsSuccessStatusCode) {
-                    result = await response.Content.ReadAsAsync<DataTableRs<ServoLogRs>> ();
+                    result = await response.Content.ReadAsAsync<DataTableRs<WatterPumpLogRs>> ();
                 } else {
                     result = null;
                 }

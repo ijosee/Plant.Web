@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Plant.Web</title>
     <!-- bootstrap -->
-    <!-- <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-reboot.css" /> -->
-    <!-- <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.css" /> -->
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-reboot.css" />
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <!-- common -->
     <link rel="stylesheet" type="text/css" href="~/css/site.css" />
     <!-- daterange -->
@@ -44,9 +44,9 @@
       <hr class="sidebar-divider">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" asp-area="" asp-controller="Calendar" asp-action="Index">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <i class="fas fa-fw fa-calendar-alt"></i>
           <span>Calendar</span></a>
       </li>
 
@@ -64,9 +64,9 @@
           <span>Higrometer</span></a>
       </li> 
       <li class="nav-item">
-        <a class="nav-link" asp-area="" asp-controller="Servo" asp-action="Index">
+        <a class="nav-link" asp-area="" asp-controller="WatterPump" asp-action="Index">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>Servo</span></a>
+          <span>WatterPump</span></a>
       </li> 
       <li class="nav-item">
         <a class="nav-link" asp-area="" asp-controller="Light" asp-action="Index">

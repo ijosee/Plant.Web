@@ -1,11 +1,9 @@
 using System;
-
-namespace Plant.Web.Entities.Rs.Rs.Servo {
-    public class ServoLogRs {
+namespace Plant.Web.Entities.Rs.WatterPump {
+    public class WatterPumpLogRs {
         public int Id { get; set; }
         public int Value { get; set; }
-        public int DegreesInitial { get; set; }
-        public int DegreesFinal { get; set; }
+        public int Flow { get; set; }
         public int OpenedTimeInSeconds { get; set; }
         public DateTime Timestamp { get; set; }
     }

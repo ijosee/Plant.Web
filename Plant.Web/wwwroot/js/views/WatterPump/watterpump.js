@@ -5,10 +5,10 @@ $(document).ready(function () {
     data.from = moment().add(-6, 'hour').format('MM/DD/YYYY HH:mm:ss');
     data.to = moment().add(6, 'hour').format('MM/DD/YYYY HH:mm:ss');
 
-    data.sensorType = "Servo";
+    data.sensorType = "WatterPump";
     getSensorData(data);
 
-    $('#daterangeServo').daterangepicker({
+    $('#daterangeWatterPump').daterangepicker({
         opens: 'left',
         timePicker: true,
         startDate: moment().startOf('hour'),
@@ -20,14 +20,14 @@ $(document).ready(function () {
         console.log("A new date selection was made: " + start.format('MM-DD-YYYY HH:mm:ss') + ' to ' + end.format('MM-DD-YYYY HH:mm:ss'));
         });
 
-   $('#daterangeServo').on('apply.daterangepicker', function(ev, picker) {
+   $('#daterangeWatterPump').on('apply.daterangepicker', function(ev, picker) {
 
        var data = {};
 
        data.from = picker.startDate.format('MM-DD-YYYY HH:mm:ss');
        data.to = picker.endDate.format('MM-DD-YYYY HH:mm:ss'); 
        
-       data.sensorType = "Servo";
+       data.sensorType = "WatterPump";
        getSensorData(data);
 
    });
@@ -41,7 +41,7 @@ $(document).ready(function () {
         ajax: { 
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "Servo/GetDataTable"
+            url: "WatterPump/GetDataTable"
         }, 
         "columns": [ 
         { "data": "id" }, 
@@ -70,13 +70,13 @@ $(document).ready(function () {
 
 });
 
-function renderServoChart(data) {
+function renderWatterPumpChart(data) {
     // parse labels and data
     var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
     var data = data.map(e => +e.y);
 
 
-    var ctx = document.getElementById("myChartServo").getContext('2d');
+    var ctx = document.getElementById("myChartWatterPump").getContext('2d');
     var chart = new Chart(ctx, {
        type: 'line',
        data: {
@@ -120,12 +120,12 @@ function getSensorData(data){
     if (data.from !== undefined && data.to !== undefined) {
         $.get('Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType, function (data) {
             var sensorData = data;
-            renderServoChart(sensorData);
+            renderWatterPumpChart(sensorData);
         });
     } else {
         $.get('Home/GetChartData',function(data){
             var sensorData = data;
-            renderServoChart(sensorData);
+            renderWatterPumpChart(sensorData);
         });
     }
 

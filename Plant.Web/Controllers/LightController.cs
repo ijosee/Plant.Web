@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Plant.Web.Entities.Chart;
+using Plant.Web.Entities.Model;
 using Plant.Web.Entities.Rq.DataTable;
 using Plant.Web.Entities.Rs.DataTable;
-using Plant.Web.Entities.Rs.Rs.Light;
+using Plant.Web.Entities.Rs.Light;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {
@@ -69,7 +69,7 @@ namespace Plant.Web.Controllers {
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
                 _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
                 var httpRequest = new HttpRequestMessage (HttpMethod.Post,
-                    $"{baseUrl}api/Light/GetAll");
+                    $"{baseUrl}api/Light/GetDataTable");
                 httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
 
                 var client = _clientFactory.CreateClient ();

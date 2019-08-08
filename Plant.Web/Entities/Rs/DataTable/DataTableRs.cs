@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+
 namespace Plant.Web.Entities.Rs.DataTable {
     public class DataTableRs<T> {
         /// <summary>
@@ -19,7 +20,7 @@ namespace Plant.Web.Entities.Rs.DataTable {
         public int RecordsFiltered { get; set; }
         /// <summary>
         /// Arreglo de datos que se va a mostrar en la tabla.
-        /// </summary>ct
+        /// </summary>
         [JsonProperty ("data")]
         public List<T> Data { get; set; }
         /// <summary>

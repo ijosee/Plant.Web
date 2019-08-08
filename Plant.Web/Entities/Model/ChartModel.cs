@@ -1,4 +1,4 @@
-namespace Plant.Web.Entities.Chart {
+namespace Plant.Web.Entities.Model {
     public class ChartModel {
         public string x { get; set; }
         public string y { get; set; }

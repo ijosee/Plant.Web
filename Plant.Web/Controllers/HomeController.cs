@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Plant.Web.Entities.Chart;
+using Plant.Web.Entities.Model;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {
