@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Plant.Web.Entities.Model;
 using Plant.Web.Entities.Rq.DataTable;
+using Plant.Web.Entities.Rs.Calendar;
 using Plant.Web.Entities.Rs.DataTable;
 using Plant.Web.Entities.Rs.Light;
 using Plant.Web.Models;
@@ -33,20 +35,20 @@ namespace Plant.Web.Controllers {
         }
 
         [HttpGet]
-        public async Task<List<ChartModel>> GetChartData (string from, string to, string sensorType) {
-            var result = new List<ChartModel> ();
+        public async Task<List<FullCalendarRs>> GetFullCalendar (DateTime from, DateTime to) {
+            var result = new List<FullCalendarRs> ();
             try {
                 _logger.LogDebug ("Getting sensor data from api");
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
                 _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
                 var request = new HttpRequestMessage (HttpMethod.Get,
-                    $"{baseUrl}api/{sensorType}/GetChart?from={from}&to={to}");
+                    $"{baseUrl}api/Calendar/GetFullCalendar?from={from}&to={to}");
 
                 var client = _clientFactory.CreateClient ();
                 var response = await client.SendAsync (request);
 
                 if (response.IsSuccessStatusCode) {
-                    result = await response.Content.ReadAsAsync<List<ChartModel>> ();
+                    result = await response.Content.ReadAsAsync<List<FullCalendarRs>> ();
                 } else {
                     result = null;
                 }
@@ -67,7 +69,7 @@ namespace Plant.Web.Controllers {
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
                 _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
                 var httpRequest = new HttpRequestMessage (HttpMethod.Post,
-                    $"{baseUrl}api/Light/GetAll");
+                    $"{baseUrl}api/Calendar/GetDataTable");
                 httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
 
                 var client = _clientFactory.CreateClient ();
