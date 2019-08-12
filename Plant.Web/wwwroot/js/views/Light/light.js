@@ -8,30 +8,6 @@ $(document).ready(function () {
     data.sensorType = "Light";
     getSensorData(data);
 
-    $('#daterangeLight').daterangepicker({
-        opens: 'left',
-        timePicker: true,
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(32, 'hour'),
-        locale: {
-          format: 'M/DD hh:mm A'
-        }
-      }, function(start, end, label) {
-        console.log("A new date selection was made: " + start.format('MM-DD-YYYY HH:mm:ss') + ' to ' + end.format('MM-DD-YYYY HH:mm:ss'));
-        });
-
-   $('#daterangeLight').on('apply.daterangepicker', function(ev, picker) {
-
-       var data = {};
-
-       data.from = picker.startDate.format('MM-DD-YYYY HH:mm:ss');
-       data.to = picker.endDate.format('MM-DD-YYYY HH:mm:ss'); 
-       
-       data.sensorType = "Light";
-       getSensorData(data);
-
-   });
-
    // did the trick !
     $.noConflict();
     $('#dataTable').DataTable({ 
@@ -52,7 +28,6 @@ $(document).ready(function () {
         "columns": [ 
         { "data": "id" }, 
         { "data": "value" }, 
-        { "data": "mode" }, 
         { "data": "timestamp" }],
         drawCallback: function( settings ) {
            var api = this.api();
@@ -72,20 +47,15 @@ $(document).ready(function () {
         }
     });
 
-    $('#dataTable').on( 'page.dt', function () {
-        
-        alert("hola");
-
-
-    } );
-
 });
 
 function renderLightChart(data) {
-    // parse labels and data
-    var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
-    var data = data.map(e => +e.y);
 
+      // parse labels and data
+    if(data !== undefined && data !== null){
+        var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
+        var data = data.map(e => +e.y);
+    }
 
     var ctx = document.getElementById("myChartLight").getContext('2d');
     var chart = new Chart(ctx, {
@@ -142,3 +112,26 @@ function getSensorData(data){
 
 }
 
+//     $('#daterangeLight').daterangepicker({
+//         opens: 'left',
+//         timePicker: true,
+//         startDate: moment().startOf('hour'),
+//         endDate: moment().startOf('hour').add(32, 'hour'),
+//         locale: {
+//           format: 'M/DD hh:mm A'
+//         }
+//       }, function(start, end, label) {
+//         console.log("A new date selection was made: " + start.format('MM-DD-YYYY HH:mm:ss') + ' to ' + end.format('MM-DD-YYYY HH:mm:ss'));
+//         });
+
+//    $('#daterangeLight').on('apply.daterangepicker', function(ev, picker) {
+
+//        var data = {};
+
+//        data.from = picker.startDate.format('MM-DD-YYYY HH:mm:ss');
+//        data.to = picker.endDate.format('MM-DD-YYYY HH:mm:ss'); 
+       
+//        data.sensorType = "Light";
+//        getSensorData(data);
+
+//    });

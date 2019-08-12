@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Plant.Web.Entities.Model;
+using Plant.Web.Entities.Rq.Calendar;
 using Plant.Web.Entities.Rq.DataTable;
 using Plant.Web.Entities.Rs.Calendar;
 using Plant.Web.Entities.Rs.DataTable;
@@ -22,7 +22,7 @@ namespace Plant.Web.Controllers {
         IConfiguration _configuration;
         IHttpClientFactory _clientFactory;
 
-        public CalendarController (ILogger<LightController> logger,
+        public CalendarController (ILogger<CalendarController> logger,
             IConfiguration configuration, IHttpClientFactory clientFactory
         ) {
             _logger = logger;
@@ -77,6 +77,60 @@ namespace Plant.Web.Controllers {
 
                 if (response.IsSuccessStatusCode) {
                     result = await response.Content.ReadAsAsync<DataTableRs<LightLogRs>> ();
+                } else {
+                    result = null;
+                }
+
+            } catch (System.Exception ex) {
+                _logger.LogError (ex.Message);
+                throw;
+            }
+            return result;
+        }
+
+        [HttpGet]
+        public async Task<SetCalendarLogRs> SetEvent (SetCalendarLogRq request) {
+            var result = new SetCalendarLogRs ();
+            try {
+                _logger.LogDebug ("Getting sensor data from api");
+                var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
+                _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                var httpRequest = new HttpRequestMessage (HttpMethod.Post,
+                    $"{baseUrl}api/Calendar");
+                httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
+
+                var client = _clientFactory.CreateClient ();
+                var response = await client.SendAsync (httpRequest);
+
+                if (response.IsSuccessStatusCode) {
+                    result = await response.Content.ReadAsAsync<SetCalendarLogRs> ();
+                } else {
+                    result = null;
+                }
+
+            } catch (System.Exception ex) {
+                _logger.LogError (ex.Message);
+                throw;
+            }
+            return result;
+        }
+
+        [HttpGet]
+        public async Task<UpdateCalendarLogRs> UpdateEvent (UpdateCalendarLogRq request) {
+            var result = new UpdateCalendarLogRs ();
+            try {
+                _logger.LogDebug ("Getting sensor data from api");
+                var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
+                _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                var httpRequest = new HttpRequestMessage (HttpMethod.Put,
+                    $"{baseUrl}api/Calendar");
+                httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
+
+                var client = _clientFactory.CreateClient ();
+                var response = await client.SendAsync (httpRequest);
+
+                if (response.IsSuccessStatusCode) {
+                    result = await response.Content.ReadAsAsync<UpdateCalendarLogRs> ();
                 } else {
                     result = null;
                 }

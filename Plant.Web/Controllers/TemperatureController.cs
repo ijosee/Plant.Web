@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Plant.Web.Entities.Model;
-using Plant.Web.Entities.Rs.WatterPump;
+using Plant.Web.Entities.Rq.DataTable;
+using Plant.Web.Entities.Rs.DataTable;
+using Plant.Web.Entities.Rs.Temperature;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {
-    public class HomeController : Controller {
+    public class TemperatureController : Controller {
 
         ILogger _logger;
         IConfiguration _configuration;
         IHttpClientFactory _clientFactory;
 
-        public HomeController (ILogger<HomeController> logger,
+        public TemperatureController (ILogger<TemperatureController> logger,
             IConfiguration configuration, IHttpClientFactory clientFactory
         ) {
             _logger = logger;
@@ -30,15 +34,10 @@ namespace Plant.Web.Controllers {
             return View ();
         }
 
-        public IActionResult Privacy () {
-            return View ();
-        }
-
         [HttpGet]
         public async Task<List<ChartModel>> GetChartData (string from, string to, string sensorType) {
             var result = new List<ChartModel> ();
             try {
-
                 _logger.LogDebug ("Getting sensor data from api");
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
                 _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
@@ -63,69 +62,23 @@ namespace Plant.Web.Controllers {
         }
 
         [HttpGet]
-        public async Task<string> GetLastWatering () {
-            var result = string.Empty;
+        public async Task<DataTableRs<TemperatureLogRs>> GetDataTable (DataTableRq request) {
+            var result = new DataTableRs<TemperatureLogRs> ();
             try {
-
                 _logger.LogDebug ("Getting sensor data from api");
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
                 _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
-                var request = new HttpRequestMessage (HttpMethod.Get,
-                    $"{baseUrl}api/WatterPump/");
+                var httpRequest = new HttpRequestMessage (HttpMethod.Post,
+                    $"{baseUrl}api/Temperature/GetDataTable");
+                httpRequest.Content = new StringContent (JsonConvert.SerializeObject (request), Encoding.UTF8, "application/json");
 
                 var client = _clientFactory.CreateClient ();
-                var watterPumpResponse = await client.SendAsync (request);
-
-                if (watterPumpResponse.IsSuccessStatusCode) {
-                    var httpResultWatterPumTotal = await watterPumpResponse.Content.ReadAsAsync<List<int>> ();
-                    var lastId = httpResultWatterPumTotal.Last ();
-
-                    _logger.LogDebug ("Getting sensor data from api");
-                    _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
-                    request = new HttpRequestMessage (HttpMethod.Get,
-                        $"{baseUrl}api/WatterPump/{lastId}");
-
-                    var httpResultWatterPum = await client.SendAsync (request);
-                    if (httpResultWatterPum.IsSuccessStatusCode) {
-                        var httpResult = await httpResultWatterPum.Content.ReadAsAsync<WatterPumpLogRs> ();
-
-                        var dayDiffs = (httpResult.Timestamp - DateTime.Now).Days;
-
-                        result = $"Last plant watering {httpResult.Timestamp.ToString("yyyy-MM-dd")} at {httpResult.Timestamp.ToString("HH:mm:ss")} with [{httpResult.Flow}] ml. {-dayDiffs} day(s) ago.";
-                    } else {
-                        result = null;
-                    }
-
-                } else {
-                    result = null;
-                }
-
-            } catch (System.Exception ex) {
-                _logger.LogError (ex.Message);
-                throw;
-            }
-            return result;
-        }
-
-        [HttpGet]
-        public async Task<object> GetTotalData (string sensorType) {
-            var result = 0;
-            try {
-
-                _logger.LogDebug ("Getting sensor data from api");
-                var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
-                _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
-                var request = new HttpRequestMessage (HttpMethod.Get,
-                    $"{baseUrl}api/{sensorType}");
-
-                var client = _clientFactory.CreateClient ();
-                var response = await client.SendAsync (request);
+                var response = await client.SendAsync (httpRequest);
 
                 if (response.IsSuccessStatusCode) {
-                    var resultList = await response.Content.ReadAsAsync<List<object>> ();
-                    result = resultList != null ? resultList.Count () : 0;
+                    result = await response.Content.ReadAsAsync<DataTableRs<TemperatureLogRs>> ();
                 } else {
-                    result = 0;
+                    result = null;
                 }
 
             } catch (System.Exception ex) {

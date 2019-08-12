@@ -1,11 +1,12 @@
+
 $(document).ready(function () {
 
     var data = {};
 
-    data.from = moment().add(-6, 'hour').format('MM/DD/YYYY HH:mm:ss');
-    data.to = moment().add(6, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    data.from = moment().add(-1, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    data.to = moment().add(1, 'hour').format('MM/DD/YYYY HH:mm:ss');
 
-    data.sensorType = "WatterPump";
+    data.sensorType = "Temperature";
     getSensorData(data);
 
    // did the trick !
@@ -17,13 +18,11 @@ $(document).ready(function () {
         ajax: { 
             type: "GET",
             contentType: "application/json; charset=utf-8",
-            url: "WatterPump/GetDataTable"
+            url: "Temperature/GetDataTable"
         }, 
         "columns": [ 
         { "data": "id" }, 
         { "data": "value" }, 
-        { "data": "flow" }, 
-        { "data": "openedTimeInSeconds" }, 
         { "data": "timestamp" }],
         drawCallback: function( settings ) {
            var api = this.api();
@@ -37,23 +36,23 @@ $(document).ready(function () {
                 data.from = moment(lastElement.timestamp).format('MM-DD-YYYY HH:mm:ss');
                 data.to = moment(firstElement.timestamp).format('MM-DD-YYYY HH:mm:ss');
 
-                data.sensorType = "WatterPump";
+                data.sensorType = "Temperature";
                 getSensorData(data);    
            }
-        }   
+        }
     });
 
 });
 
-function renderWatterPumpChart(data) {
-
+function renderTemperatureChart(data) {
+    
     // parse labels and data
     if(data !== undefined && data !== null){
         var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
         var data = data.map(e => +e.y);
     }
 
-    var ctx = document.getElementById("myChartWatterPump").getContext('2d');
+    var ctx = document.getElementById("myChartTemperature").getContext('2d');
     var chart = new Chart(ctx, {
        type: 'line',
        data: {
@@ -61,14 +60,14 @@ function renderWatterPumpChart(data) {
           datasets: [{
             label: 'Sensor measures',
             data: data,
-            backgroundColor: "rgba(78, 223, 115, 0.05)",
-            borderColor: "rgba(78, 223, 115, 1)",
+            backgroundColor: "rgba(78, 115, 223, 0.05)",
+            borderColor: "rgba(78, 115, 223, 1)",
             pointRadius: 3,
-            pointBackgroundColor: "rgba(78, 223, 115, 1)",
-            pointBorderColor: "rgba(78, 223, 115, 1)",
+            pointBackgroundColor: "rgba(78, 115, 223, 1)",
+            pointBorderColor: "rgba(78, 115, 223, 1)",
             pointHoverRadius: 3,
-            pointHoverBackgroundColor: "rgba(78, 223, 115, 1)",
-            pointHoverBorderColor: "rgba(78, 223, 115, 1)",
+            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
             pointHitRadius: 10,
             pointBorderWidth: 2,
           }]
@@ -97,18 +96,21 @@ function getSensorData(data){
     if (data.from !== undefined && data.to !== undefined) {
         $.get('Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType, function (data) {
             var sensorData = data;
-            renderWatterPumpChart(sensorData);
+            if(sensorData !== undefined){
+                renderTemperatureChart(sensorData);
+            }
         });
     } else {
         $.get('Home/GetChartData',function(data){
             var sensorData = data;
-            renderWatterPumpChart(sensorData);
+            if(sensorData !== undefined){
+                renderTemperatureChart(sensorData);
+            }
         });
     }
-
 }
 
-// $('#daterangeWatterPump').daterangepicker({
+// $('#daterangeTemperature').daterangepicker({
 //         opens: 'left',
 //         timePicker: true,
 //         startDate: moment().startOf('hour'),
@@ -120,14 +122,14 @@ function getSensorData(data){
 //         console.log("A new date selection was made: " + start.format('MM-DD-YYYY HH:mm:ss') + ' to ' + end.format('MM-DD-YYYY HH:mm:ss'));
 //         });
 
-//    $('#daterangeWatterPump').on('apply.daterangepicker', function(ev, picker) {
+//    $('#daterangeTemperature').on('apply.daterangepicker', function(ev, picker) {
 
 //        var data = {};
 
 //        data.from = picker.startDate.format('MM-DD-YYYY HH:mm:ss');
 //        data.to = picker.endDate.format('MM-DD-YYYY HH:mm:ss'); 
        
-//        data.sensorType = "WatterPump";
+//        data.sensorType = "Temperature";
 //        getSensorData(data);
 
 //    });

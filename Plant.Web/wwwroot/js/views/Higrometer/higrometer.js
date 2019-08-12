@@ -3,35 +3,11 @@ $(document).ready(function () {
 
     var data = {};
 
-    data.from = moment().add(-6, 'hour').format('MM/DD/YYYY HH:mm:ss');
-    data.to = moment().add(6, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    data.from = moment().add(-1, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    data.to = moment().add(1, 'hour').format('MM/DD/YYYY HH:mm:ss');
 
     data.sensorType = "Higrometer";
     getSensorData(data);
-
-    $('#daterangeHigrometer').daterangepicker({
-        opens: 'left',
-        timePicker: true,
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(32, 'hour'),
-        locale: {
-          format: 'M/DD hh:mm A'
-        }
-      }, function(start, end, label) {
-        console.log("A new date selection was made: " + start.format('MM-DD-YYYY HH:mm:ss') + ' to ' + end.format('MM-DD-YYYY HH:mm:ss'));
-        });
-
-   $('#daterangeHigrometer').on('apply.daterangepicker', function(ev, picker) {
-
-       var data = {};
-
-       data.from = picker.startDate.format('MM-DD-YYYY HH:mm:ss');
-       data.to = picker.endDate.format('MM-DD-YYYY HH:mm:ss'); 
-       
-       data.sensorType = "Higrometer";
-       getSensorData(data);
-
-   });
 
    // did the trick !
     $.noConflict();
@@ -69,10 +45,12 @@ $(document).ready(function () {
 });
 
 function renderHigrometerChart(data) {
-    // parse labels and data
-    var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
-    var data = data.map(e => +e.y);
 
+    // parse labels and data
+    if(data !== undefined && data !== null){
+        var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
+        var data = data.map(e => +e.y);
+    }
 
     var ctx = document.getElementById("myChartHigrometer").getContext('2d');
     var chart = new Chart(ctx, {
@@ -132,3 +110,26 @@ function getSensorData(data){
     }
 }
 
+//     $('#daterangeHigrometer').daterangepicker({
+//         opens: 'left',
+//         timePicker: true,
+//         startDate: moment().startOf('hour'),
+//         endDate: moment().startOf('hour').add(32, 'hour'),
+//         locale: {
+//           format: 'M/DD hh:mm A'
+//         }
+//       }, function(start, end, label) {
+//         console.log("A new date selection was made: " + start.format('MM-DD-YYYY HH:mm:ss') + ' to ' + end.format('MM-DD-YYYY HH:mm:ss'));
+//         });
+
+//    $('#daterangeHigrometer').on('apply.daterangepicker', function(ev, picker) {
+
+//        var data = {};
+
+//        data.from = picker.startDate.format('MM-DD-YYYY HH:mm:ss');
+//        data.to = picker.endDate.format('MM-DD-YYYY HH:mm:ss'); 
+       
+//        data.sensorType = "Higrometer";
+//        getSensorData(data);
+
+//    });
