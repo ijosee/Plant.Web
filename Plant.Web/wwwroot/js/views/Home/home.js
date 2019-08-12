@@ -17,12 +17,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         getBlocksData();
         getChartData();
      }, 12000);
-
-
-     $.get('Home/GetLastWatering', function (data) {
-            $('#last_wattering_date').html(data);
-        });
-
 });
 
 // inicialize
@@ -78,6 +72,10 @@ function getBlocksData(){
     data.sensorType = "Humidity";
     $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
             $('#humidity_total_data_number').html(data);
+        });
+
+     $.get('Home/GetLastWatering', function (data) {
+            $('#last_wattering_date').html(data);
         });
 }
 

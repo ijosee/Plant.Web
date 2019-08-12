@@ -23,7 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         color: 'yellow',   // a non-ajax option
         textColor: 'black' // a non-ajax option
-      }],
+      },
+      {
+        url: 'Calendar/GetLastWatering',
+        error: function() {
+          alert('there was an error while fetching events!');
+        },
+        color: 'green',   // a non-ajax option
+        textColor: 'white' // a non-ajax option
+      },
+    ],
       select: function(arg) {
         var title = prompt('Set a title for your event :');
         if (title) {
@@ -36,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
           });
 
           var setEventData = {};
-          //updateEvent.id = arg.id;
           setEventData.title = title;
           setEventData.start =moment(arg.start).format('MM-DD-YYYY HH:mm:ss');
           setEventData.end = moment(arg.end).format('MM-DD-YYYY HH:mm:ss');
@@ -55,21 +63,25 @@ document.addEventListener('DOMContentLoaded', function() {
         //   container: 'body'
         // });
 
-      $(info.el).data('id',info.id)
+        // new Tooltip(info.el, {
+        //     title: 'jose',
+        //     placement: 'top', // or bottom, left, right, and variations
+        //     title: "Top"
+        // });
+        var firstElement = $(info.el)[0];
+        $(firstElement).data('id',info.event._def.publicId);
+        $(firstElement).data('toggle','tooltip');
+        $(firstElement).data('original-title',info.event._def.title);
 
       },
       eventClick : function(info) {
-        //alert('Event: ' + info.event.title);
-        //alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-        //alert('View: ' + info.view.type);
 
-        // change the border color just for fun
         info.el.style.borderColor = 'red';
       },
       eventDrop: function(info) {
 
         var updateEventData = {};
-        updateEventData.id = 3;
+        updateEventData.id = info.event._def.publicId;
         updateEventData.title = info.event._def.title;
         updateEventData.start = moment(info.event._instance.range.start).format('MM-DD-YYYY HH:mm:ss');
         updateEventData.end = moment(info.event._instance.range.end).format('MM-DD-YYYY HH:mm:ss');

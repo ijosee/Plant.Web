@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using Plant.Web.Entities.Rq.DataTable;
 using Plant.Web.Entities.Rs.Calendar;
 using Plant.Web.Entities.Rs.DataTable;
 using Plant.Web.Entities.Rs.Light;
+using Plant.Web.Entities.Rs.WatterPump;
 using Plant.Web.Models;
 
 namespace Plant.Web.Controllers {
@@ -62,8 +64,8 @@ namespace Plant.Web.Controllers {
         }
 
         [HttpGet]
-        public async Task<DataTableRs<LightLogRs>> GetDataTable (DataTableRq request) {
-            var result = new DataTableRs<LightLogRs> ();
+        public async Task<DataTableRs<SetCalendarLogRs>> GetDataTable (DataTableRq request) {
+            var result = new DataTableRs<SetCalendarLogRs> ();
             try {
                 _logger.LogDebug ("Getting sensor data from api");
                 var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
@@ -76,7 +78,7 @@ namespace Plant.Web.Controllers {
                 var response = await client.SendAsync (httpRequest);
 
                 if (response.IsSuccessStatusCode) {
-                    result = await response.Content.ReadAsAsync<DataTableRs<LightLogRs>> ();
+                    result = await response.Content.ReadAsAsync<DataTableRs<SetCalendarLogRs>> ();
                 } else {
                     result = null;
                 }
@@ -131,6 +133,58 @@ namespace Plant.Web.Controllers {
 
                 if (response.IsSuccessStatusCode) {
                     result = await response.Content.ReadAsAsync<UpdateCalendarLogRs> ();
+                } else {
+                    result = null;
+                }
+
+            } catch (System.Exception ex) {
+                _logger.LogError (ex.Message);
+                throw;
+            }
+            return result;
+        }
+
+        [HttpGet]
+        public async Task<List<FullCalendarRs>> GetLastWatering () {
+            var result = new List<FullCalendarRs> ();
+            try {
+
+                _logger.LogDebug ("Getting sensor data from api");
+                var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
+                _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                var request = new HttpRequestMessage (HttpMethod.Get,
+                    $"{baseUrl}api/WatterPump/");
+
+                var client = _clientFactory.CreateClient ();
+                var watterPumpResponse = await client.SendAsync (request);
+
+                if (watterPumpResponse.IsSuccessStatusCode) {
+                    var httpResultWatterPumTotal = await watterPumpResponse.Content.ReadAsAsync<List<int>> ();
+                    var lastId = httpResultWatterPumTotal.Last ();
+
+                    _logger.LogDebug ("Getting sensor data from api");
+                    _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                    request = new HttpRequestMessage (HttpMethod.Get,
+                        $"{baseUrl}api/WatterPump/{lastId}");
+
+                    var httpResultWatterPum = await client.SendAsync (request);
+                    if (httpResultWatterPum.IsSuccessStatusCode) {
+                        var httpResult = await httpResultWatterPum.Content.ReadAsAsync<WatterPumpLogRs> ();
+
+                        var calendarEventResonseItem = new FullCalendarRs () {
+                            Id = httpResult.Id,
+                            Title = $"Automatic Watering [ {httpResult.Flow} ] ml.",
+                            Start = httpResult.Timestamp.ToString ("u"),
+                            End = httpResult.Timestamp.AddMinutes (httpResult.OpenedTimeInSeconds).ToString ("u"),
+                            AllDay = false
+                        };
+
+                        result.Add (calendarEventResonseItem);
+
+                    } else {
+                        result = null;
+                    }
+
                 } else {
                     result = null;
                 }
