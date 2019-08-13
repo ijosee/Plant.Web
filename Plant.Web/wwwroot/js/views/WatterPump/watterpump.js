@@ -1,13 +1,5 @@
 $(document).ready(function () {
 
-    var data = {};
-
-    data.from = moment().add(-6, 'hour').format('MM/DD/YYYY HH:mm:ss');
-    data.to = moment().add(6, 'hour').format('MM/DD/YYYY HH:mm:ss');
-
-    data.sensorType = "WatterPump";
-    getSensorData(data);
-
    // did the trick !
     $.noConflict();
     $('#dataTable').DataTable({ 
@@ -47,19 +39,21 @@ $(document).ready(function () {
 
 function renderWatterPumpChart(data) {
 
+    var labels;
+    var data ;
     // parse labels and data
     if(data !== undefined && data !== null){
-        var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
-        var data = data.map(e => +e.y);
+        labels = data.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
+        data = data.map(e => +e.y);
     }
 
     var ctx = document.getElementById("myChartWatterPump").getContext('2d');
-    var chart = new Chart(ctx, {
+    new Chart(ctx, {
        type: 'line',
        data: {
           labels: labels,
           datasets: [{
-            label: 'Sensor measures',
+            label: 'Watter pump measures',
             data: data,
             backgroundColor: "rgba(78, 223, 115, 0.05)",
             borderColor: "rgba(78, 223, 115, 1)",
@@ -73,21 +67,22 @@ function renderWatterPumpChart(data) {
             pointBorderWidth: 2,
           }]
        },
-       options: {
-          scales: {
-             xAxes: [{
-                type: 'time',
-                time: {
-                   unit: 'minute',
-                   displayFormats: {
-                      hour: 'HH:mm'
-                   }
-                }
-             }]
-          },legend: {
+       scales: {
+            xAxes: [{
+            type: 'time',
+            time: {
+                unit: 'minute'
+            },
+            distribution: 'linear'
+            }],
+            yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }}]
+        },
+        legend: {
             display: true
-        }
-       }
+        },
     });
 
 }
@@ -131,3 +126,11 @@ function getSensorData(data){
 //        getSensorData(data);
 
 //    });
+
+ // var data = {};
+
+    // data.from = moment().add(-6, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    // data.to = moment().add(6, 'hour').format('MM/DD/YYYY HH:mm:ss');
+
+    // data.sensorType = "WatterPump";
+    // getSensorData(data);

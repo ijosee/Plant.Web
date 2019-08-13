@@ -45,28 +45,30 @@ $(document).ready(function () {
 
 function renderHumidityChart(data) {
 
+    var labels;
+    var data ;
     // parse labels and data
     if(data !== undefined && data !== null){
-        var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
-        var data = data.map(e => +e.y);
+        labels = data.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
+        data = data.map(e => +e.y);
     }
 
     var ctx = document.getElementById("myChartHumidity").getContext('2d');
-    var chart = new Chart(ctx, {
+    new Chart(ctx, {
        type: 'line',
        data: {
           labels: labels,
           datasets: [{
-            label: 'Sensor measures',
+            label: 'Humidity measures',
             data: data,
-            backgroundColor: "rgba(78, 115, 223, 0.05)",
-            borderColor: "rgba(78, 115, 223, 1)",
+            backgroundColor: "rgba(255, 150, 0, 0.05)",
+            borderColor: "rgba(255, 150, 0,1)",
             pointRadius: 3,
-            pointBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointBorderColor: "rgba(78, 115, 223, 1)",
+            pointBackgroundColor: "rgba(255, 150, 0, 1)",
+            pointBorderColor: "rgba(255, 150, 0, 1)",
             pointHoverRadius: 3,
-            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+            pointHoverBackgroundColor: "rgba(255, 150, 0, 1)",
+            pointHoverBorderColor: "rgba(255, 150, 0, 1)",
             pointHitRadius: 10,
             pointBorderWidth: 2,
           }]

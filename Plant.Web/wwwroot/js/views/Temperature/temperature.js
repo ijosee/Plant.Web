@@ -1,13 +1,13 @@
 
 $(document).ready(function () {
 
-    var data = {};
+    // var data = {};
 
-    data.from = moment().add(-1, 'hour').format('MM/DD/YYYY HH:mm:ss');
-    data.to = moment().add(1, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    // data.from = moment().add(-1, 'hour').format('MM/DD/YYYY HH:mm:ss');
+    // data.to = moment().add(1, 'hour').format('MM/DD/YYYY HH:mm:ss');
 
-    data.sensorType = "Temperature";
-    getSensorData(data);
+    // data.sensorType = "Temperature";
+    // getSensorData(data);
 
    // did the trick !
     $.noConflict();
@@ -45,29 +45,31 @@ $(document).ready(function () {
 });
 
 function renderTemperatureChart(data) {
-    
+
+    var labels;
+    var data ;
     // parse labels and data
     if(data !== undefined && data !== null){
-        var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
-        var data = data.map(e => +e.y);
+        labels = data.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
+        data = data.map(e => +e.y);
     }
 
     var ctx = document.getElementById("myChartTemperature").getContext('2d');
-    var chart = new Chart(ctx, {
+    new Chart(ctx, {
        type: 'line',
        data: {
           labels: labels,
           datasets: [{
             label: 'Sensor measures',
             data: data,
-            backgroundColor: "rgba(78, 115, 223, 0.05)",
-            borderColor: "rgba(78, 115, 223, 1)",
+            backgroundColor: "rgba(238,50,49, 0.05)",
+            borderColor: "rgba(238,50,49,1)",
             pointRadius: 3,
-            pointBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointBorderColor: "rgba(78, 115, 223, 1)",
+            pointBackgroundColor: "rgba(238,50,49, 1)",
+            pointBorderColor: "rgba(238,50,49, 1)",
             pointHoverRadius: 3,
-            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+            pointHoverBackgroundColor: "rgba(238,50,49, 1)",
+            pointHoverBorderColor: "rgba(238,50,49, 1)",
             pointHitRadius: 10,
             pointBorderWidth: 2,
           }]

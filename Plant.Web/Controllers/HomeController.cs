@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Plant.Web.Entities.Model;
+using Plant.Web.Entities.Rs.Higrometer;
+using Plant.Web.Entities.Rs.Humidity;
+using Plant.Web.Entities.Rs.Light;
+using Plant.Web.Entities.Rs.Temperature;
 using Plant.Web.Entities.Rs.WatterPump;
 using Plant.Web.Models;
 
@@ -91,7 +96,7 @@ namespace Plant.Web.Controllers {
 
                         var dayDiffs = (httpResult.Timestamp - DateTime.Now).Days;
 
-                        result = $"Last plant watering {httpResult.Timestamp.ToString("yyyy-MM-dd")} at {httpResult.Timestamp.ToString("HH:mm:ss")} with [{httpResult.Flow}] ml. {-dayDiffs} day(s) ago.";
+                        result = $"Last plant watering {httpResult.Timestamp.ToString("yyyy-MM-dd")} at {httpResult.Timestamp.ToString("HH:mm:ss")} with [{httpResult.Value}] ml. {-dayDiffs} day(s) ago.";
                     } else {
                         result = null;
                     }
@@ -108,8 +113,9 @@ namespace Plant.Web.Controllers {
         }
 
         [HttpGet]
-        public async Task<object> GetTotalData (string sensorType) {
-            var result = 0;
+        public async Task<string> GetLastRowData (string sensorType) {
+
+            string result = string.Empty;
             try {
 
                 _logger.LogDebug ("Getting sensor data from api");
@@ -122,10 +128,46 @@ namespace Plant.Web.Controllers {
                 var response = await client.SendAsync (request);
 
                 if (response.IsSuccessStatusCode) {
-                    var resultList = await response.Content.ReadAsAsync<List<object>> ();
-                    result = resultList != null ? resultList.Count () : 0;
+                    var httpResultValue = await response.Content.ReadAsAsync<List<object>> ();
+                    // get last value
+                    var lastId = httpResultValue.Last ();
+                    // show base
+                    _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                    // prepare request
+                    request = new HttpRequestMessage (HttpMethod.Get,
+                        $"{baseUrl}api/{sensorType}/{lastId}");
+
+                    var httpResult = await client.SendAsync (request);
+                    if (httpResult.IsSuccessStatusCode) {
+                        var httpResultWithValue = await httpResult.Content.ReadAsAsync<object> ();
+
+                        if (sensorType.Equals ("Higrometer")) {
+                            var objectResult = JsonConvert.DeserializeObject<HigrometerLogRs> ($"{httpResultWithValue}");
+                            result = $"{objectResult.Value} % ";
+                        }
+                        if (sensorType.Equals ("Humidity")) {
+                            var objectResult = JsonConvert.DeserializeObject<HumidityLogRs> ($"{httpResultWithValue}");
+                            result = $" { objectResult.Value } % ";
+                        }
+                        if (sensorType.Equals ("Light")) {
+                            var objectResult = JsonConvert.DeserializeObject<LightLogRs> ($"{httpResultWithValue}");
+                            result = $"{objectResult.Value} blinks ";
+                        }
+                        if (sensorType.Equals ("Temperature")) {
+                            var objectResult = JsonConvert.DeserializeObject<TemperatureLogRs> ($"{httpResultWithValue}");
+                            result = $" { objectResult.Value } Cª ";
+                        }
+                        if (sensorType.Equals ("WatterPump")) {
+                            var objectResult = JsonConvert.DeserializeObject<WatterPumpLogRs> ($"{httpResultWithValue}");
+                            result = $"{objectResult.Value} ml ";
+                        }
+
+                    } else {
+                        result = null;
+                    }
+
                 } else {
-                    result = 0;
+                    result = null;
                 }
 
             } catch (System.Exception ex) {

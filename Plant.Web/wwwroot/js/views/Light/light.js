@@ -50,20 +50,22 @@ $(document).ready(function () {
 });
 
 function renderLightChart(data) {
-
-      // parse labels and data
+    
+    var labels;
+    var data ;
+    // parse labels and data
     if(data !== undefined && data !== null){
-        var labels = data.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
-        var data = data.map(e => +e.y);
+        labels = data.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
+        data = data.map(e => +e.y);
     }
 
     var ctx = document.getElementById("myChartLight").getContext('2d');
-    var chart = new Chart(ctx, {
+    new Chart(ctx, {
        type: 'line',
        data: {
           labels: labels,
           datasets: [{
-            label: 'Sensor measures',
+            label: 'Light measures',
             data: data,
             backgroundColor: "rgba(255, 255, 0, 0.05)",
             borderColor: "rgba(255, 255, 0,1)",

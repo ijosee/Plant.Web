@@ -13,10 +13,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     inicializeEvents();
 
-     setInterval(function() {
+    //   setInterval(function() {
         getBlocksData();
         getChartData();
-     }, 12000);
+    //   }, 5000);
 });
 
 // inicialize
@@ -47,30 +47,32 @@ function inicializeEvents(){
 
 }
 
-function getBlocksData(){
+async function getBlocksData(){
 
     var data = {};
 
     data.sensorType = "Higrometer";
-    $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
+    $.get('Home/GetLastRowData?sensorType=' + data.sensorType, function (data) {
             $('#higrometer_total_data_number').html(data);
         });
-    data.sensorType = "Watterpump";
-    $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
+
+    data.sensorType = "WatterPump";
+    $.get('Home/GetLastRowData?sensorType=' + data.sensorType, function (data) {
             $('#watterpump_total_data_number').html(data);
         });
+
     data.sensorType = "Light";
-    $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
+    $.get('Home/GetLastRowData?sensorType=' + data.sensorType, function (data) {
             $('#light_total_data_number').html(data);
         });
 
     data.sensorType = "Temperature";
-    $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
+    $.get('Home/GetLastRowData?sensorType=' + data.sensorType, function (data) {
             $('#temperature_total_data_number').html(data);
         });
 
     data.sensorType = "Humidity";
-    $.get('Home/GetTotalData?sensorType=' + data.sensorType, function (data) {
+    $.get('Home/GetLastRowData?sensorType=' + data.sensorType, function (data) {
             $('#humidity_total_data_number').html(data);
         });
 
@@ -82,11 +84,100 @@ function getBlocksData(){
 function getChartData(){
 
         var data = {};
-        data.from = moment().add(-2.5, 'minute').format('MM/DD/YYYY HH:mm:ss');
-        data.to = moment().add(2.5, 'minute').format('MM/DD/YYYY HH:mm:ss');
+        data.from = moment().add(-0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
+        data.to = moment().add(0.5, 'hour').format('MM/DD/YYYY HH:mm:ss');
 
         data.sensorType = "Higrometer";
         getSensorData(data);
+}
+
+function getSensorData(data){
+
+    var url = "";
+    if (data.from !== undefined && data.to !== undefined) {
+        url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType;
+    } else{
+        url = 'Home/GetChartData?sensorType=' + data.sensorType;
+    }
+
+    $.get(url, function () {
+        console.log("calling :"+url);
+    }).done(function(HigrometerData){
+
+        datahigrometer =  HigrometerData;
+
+        console.log("done , HigrometerData ! ");
+
+        data.sensorType = "Watterpump";
+        url = "";
+        if (data.from !== undefined && data.to !== undefined) {
+            url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType;
+        } else{
+            url = 'Home/GetChartData?sensorType=' + data.sensorType;
+        }
+
+        $.get(url, function () {
+            console.log("calling :"+url);
+        }).done(function(WatterpumpData){
+
+            console.log("done , WatterpumpData ! ");
+            datawatterpump =  WatterpumpData;
+
+            data.sensorType = "Light";
+            url = "";
+            if (data.from !== undefined && data.to !== undefined) {
+                url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType;
+            } else{
+                url = 'Home/GetChartData?sensorType=' + data.sensorType;
+            }
+
+            $.get(url, function () {
+                console.log("calling :"+url);
+            }).done(function(LightData){
+
+                console.log("done , LightData ! ");
+                datalight=  LightData;
+                
+                data.sensorType = "Humidity";
+                url = "";
+                var sensorType = data.sensorType;
+                if (data.from !== undefined && data.to !== undefined) {
+                    url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + sensorType;
+                } else{
+                    url = 'Home/GetChartData?sensorType=' + sensorType;
+                }
+                            
+                $.get(url, function () {
+                    console.log("calling :"+url);
+                }).done(function(HumidityData){
+
+                    console.log("done , HumidityData ! ");
+                    datahumidity =  HumidityData;
+
+                    data.sensorType = "Temperature";
+                    url = "";
+                    var sensorType = data.sensorType;
+                    if (data.from !== undefined && data.to !== undefined) {
+                        url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + sensorType;
+                    } else{
+                        url = 'Home/GetChartData?sensorType=' + sensorType;
+                    }
+
+                    $.get(url, function () {
+                        console.log("calling :"+url);
+                    }).done(function(TemperatureData){
+
+                        console.log("done , datatemperature ! ");
+                        datatemperature=  TemperatureData;
+                                            
+                        renderChart();
+
+                    });
+
+                });
+             });
+        });
+    });
 }
 
 function renderChart() {
@@ -94,7 +185,7 @@ function renderChart() {
     var dataYHigrometer ;
     var labels;
     if(datahigrometer !== undefined && datahigrometer !== null){
-     labels = datahigrometer.map(e => moment(e.x, 'MM-DD-YYYY HH:mm:ss'));
+     labels = datahigrometer.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
      dataYHigrometer= datahigrometer.map(e => +e.y);
     }
 
@@ -116,7 +207,7 @@ function renderChart() {
 
     var progress = document.getElementById('animationProgress');
     var ctx = document.getElementById("myChartSensor").getContext('2d');
-    var mychart = new Chart(ctx, {
+    new Chart(ctx, {
        type: 'line',
        data: {
           labels: labels,
@@ -196,19 +287,23 @@ function renderChart() {
                 pointHitRadius: 10,
                 pointBorderWidth: 2,
             }
-            
         ]
         },
        options: {
-          scales: {
-             xAxes: [{
-                type: 'time',
-                time: {
-                   unit: 'minute'
-                },
-                distribution: 'linear'
-             }]
-          },legend: {
+        scales: {
+            xAxes: [{
+            type: 'time',
+            time: {
+                unit: 'minute'
+            },
+            distribution: 'linear'
+            }],
+            yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }}]
+        },
+        legend: {
             display: true
         },
         animation: false,
@@ -224,7 +319,7 @@ function renderChart() {
         animation: {
             duration: 2000,
             onProgress: function(animation) {
-                progress.value = animation.currentStep / animation.numSteps;
+                 progress.value = animation.currentStep / animation.numSteps;
             },
             onComplete: function(animation) {
                 window.setTimeout(function() {
@@ -233,94 +328,5 @@ function renderChart() {
             }
         }
        }
-    });
-
-}
-
-function getSensorData(data){
-
-    var url = "";
-    if (data.from !== undefined && data.to !== undefined) {
-        url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType;
-    } else{
-        url = 'Home/GetChartData?sensorType=' + data.sensorType;
-    }
-
-    $.get(url, function () {
-        console.log("calling :"+url);
-    }).done(function(HigrometerData){
-
-        datahigrometer =  HigrometerData;
-        console.log("done , HigrometerData ! ");
-
-        data.sensorType = "Watterpump";
-        url = "";
-        if (data.from !== undefined && data.to !== undefined) {
-            url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType;
-        } else{
-            url = 'Home/GetChartData?sensorType=' + data.sensorType;
-        }
-
-        $.get(url, function () {
-            console.log("calling :"+url);
-        }).done(function(WatterpumpData){
-
-            console.log("done , WatterpumpData ! ");
-            datawatterpump =  WatterpumpData;
-
-            data.sensorType = "Light";
-            url = "";
-            if (data.from !== undefined && data.to !== undefined) {
-                url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + data.sensorType;
-            } else{
-                url = 'Home/GetChartData?sensorType=' + data.sensorType;
-            }
-
-            $.get(url, function () {
-                console.log("calling :"+url);
-            }).done(function(LightData){
-
-                console.log("done , LightData ! ");
-                datalight=  LightData;
-                
-                data.sensorType = "Humidity";
-                url = "";
-                var sensorType = data.sensorType;
-                if (data.from !== undefined && data.to !== undefined) {
-                    url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + sensorType;
-                } else{
-                    url = 'Home/GetChartData?sensorType=' + sensorType;
-                }
-                            
-                $.get(url, function () {
-                    console.log("calling :"+url);
-                }).done(function(HumidityData){
-
-                    console.log("done , HumidityData ! ");
-                    datahumidity =  HumidityData;
-
-                    data.sensorType = "Temperature";
-                    url = "";
-                    var sensorType = data.sensorType;
-                    if (data.from !== undefined && data.to !== undefined) {
-                        url ='Home/GetChartData?from=' + data.from + '&to=' + data.to + '&sensorType=' + sensorType;
-                    } else{
-                        url = 'Home/GetChartData?sensorType=' + sensorType;
-                    }
-
-                    $.get(url, function () {
-                        console.log("calling :"+url);
-                    }).done(function(TemperatureData){
-
-                        console.log("done , datatemperature ! ");
-                        datatemperature=  TemperatureData;
-                                            
-                        renderChart();
-
-                    });
-
-                });
-             });
-        });
     });
 }
