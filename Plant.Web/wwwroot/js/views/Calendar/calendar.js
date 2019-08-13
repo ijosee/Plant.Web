@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+
     var calendarEl = document.getElementById('calendar');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
       selectMirror: true,
       displayEventTime : true,
       eventSources: [
-        {
+      {
         url: 'Calendar/GetFullCalendar',
         error: function() {
           alert('there was an error while fetching events!');
@@ -56,27 +58,15 @@ document.addEventListener('DOMContentLoaded', function() {
         calendar.unselect();
       },
       eventRender: function(info) {
-        // var tooltip = new Tooltip(info.el, {
-        //   title: 'jose',
-        //   placement: 'top',
-        //   trigger: 'hover',
-        //   container: 'body'
-        // });
 
-        // new Tooltip(info.el, {
-        //     title: 'jose',
-        //     placement: 'top', // or bottom, left, right, and variations
-        //     title: "Top"
-        // });
-        var firstElement = $(info.el)[0];
-        $(firstElement).data('id',info.event._def.publicId);
-        $(firstElement).data('toggle','tooltip');
-        $(firstElement).data('original-title',info.event._def.title);
+        info.el.setAttribute('data-toggle','tooltip');
+        info.el.setAttribute('data-original-title',info.event._def.title);
 
       },
       eventClick : function(info) {
 
         info.el.style.borderColor = 'red';
+        
       },
       eventDrop: function(info) {
 

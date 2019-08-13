@@ -12,14 +12,17 @@ var yLabels = {
 document.addEventListener("DOMContentLoaded", function(event) { 
 
     inicializeEvents();
+    
+    getBlocksData();
+    getChartData();
 
-    //   setInterval(function() {
+    setInterval(function() {
         getBlocksData();
         getChartData();
-    //   }, 5000);
+    }, 30000);
+
 });
 
-// inicialize
 function inicializeEvents(){
 
     $('#daterangeHigrometer').daterangepicker({
@@ -106,8 +109,6 @@ function getSensorData(data){
 
         datahigrometer =  HigrometerData;
 
-        console.log("done , HigrometerData ! ");
-
         data.sensorType = "Watterpump";
         url = "";
         if (data.from !== undefined && data.to !== undefined) {
@@ -120,7 +121,6 @@ function getSensorData(data){
             console.log("calling :"+url);
         }).done(function(WatterpumpData){
 
-            console.log("done , WatterpumpData ! ");
             datawatterpump =  WatterpumpData;
 
             data.sensorType = "Light";
@@ -135,7 +135,6 @@ function getSensorData(data){
                 console.log("calling :"+url);
             }).done(function(LightData){
 
-                console.log("done , LightData ! ");
                 datalight=  LightData;
                 
                 data.sensorType = "Humidity";
@@ -151,7 +150,6 @@ function getSensorData(data){
                     console.log("calling :"+url);
                 }).done(function(HumidityData){
 
-                    console.log("done , HumidityData ! ");
                     datahumidity =  HumidityData;
 
                     data.sensorType = "Temperature";
@@ -167,13 +165,9 @@ function getSensorData(data){
                         console.log("calling :"+url);
                     }).done(function(TemperatureData){
 
-                        console.log("done , datatemperature ! ");
                         datatemperature=  TemperatureData;
-                                            
                         renderChart();
-
                     });
-
                 });
              });
         });

@@ -1,14 +1,6 @@
 
 $(document).ready(function () {
 
-    var data = {};
-
-    data.from = moment().add(-1, 'hour').format('MM/DD/YYYY HH:mm:ss');
-    data.to = moment().add(1, 'hour').format('MM/DD/YYYY HH:mm:ss');
-
-    data.sensorType = "Humidity";
-    getSensorData(data);
-
    // did the trick !
     $.noConflict();
     $('#dataTable').DataTable({ 
@@ -47,7 +39,6 @@ function renderHumidityChart(data) {
 
     var labels;
     var data ;
-    // parse labels and data
     if(data !== undefined && data !== null){
         labels = data.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
         data = data.map(e => +e.y);
@@ -74,18 +65,42 @@ function renderHumidityChart(data) {
           }]
        },
        options: {
-          scales: {
-             xAxes: [{
-                type: 'time',
-                time: {
-                   unit: 'minute',
-                   displayFormats: {
-                      hour: 'HH:mm'
-                   }
-                }
-             }]
-          },legend: {
+        scales: {
+            xAxes: [{
+            type: 'time',
+            time: {
+                unit: 'minute'
+            },
+            distribution: 'linear'
+            }],
+            yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }}]
+        },
+        legend: {
             display: true
+        },
+        animation: false,
+        //Boolean - If we want to override with a hard coded scale
+        scaleOverride: false,
+        //** Required if scaleOverride is true **
+        //Number - The number of steps in a hard coded scale
+        scaleSteps: 10,
+        //Number - The value jump in the hard coded scale
+        scaleStepWidth: 10,
+        //Number - The scale starting value
+        scaleStartValue: 0,
+        animation: {
+            duration: 2000,
+            onProgress: function(animation) {
+                 progress.value = animation.currentStep / animation.numSteps;
+            },
+            onComplete: function(animation) {
+                window.setTimeout(function() {
+                    progress.value = 0;
+                }, 2000);
+            }
         }
        }
     });
