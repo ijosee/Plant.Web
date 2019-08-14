@@ -82,26 +82,6 @@ function renderHumidityChart(data) {
             display: true
         },
         animation: false,
-        //Boolean - If we want to override with a hard coded scale
-        scaleOverride: false,
-        //** Required if scaleOverride is true **
-        //Number - The number of steps in a hard coded scale
-        scaleSteps: 10,
-        //Number - The value jump in the hard coded scale
-        scaleStepWidth: 10,
-        //Number - The scale starting value
-        scaleStartValue: 0,
-        animation: {
-            duration: 2000,
-            onProgress: function(animation) {
-                 progress.value = animation.currentStep / animation.numSteps;
-            },
-            onComplete: function(animation) {
-                window.setTimeout(function() {
-                    progress.value = 0;
-                }, 2000);
-            }
-        }
        }
     });
 

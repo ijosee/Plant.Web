@@ -84,21 +84,6 @@ function renderHigrometerChart(data) {
             display: true
         },
         animation: false,
-        scaleOverride: false,
-        scaleSteps: 10,
-        scaleStepWidth: 10,
-        scaleStartValue: 0,
-        animation: {
-            duration: 2000,
-            onProgress: function(animation) {
-                 progress.value = animation.currentStep / animation.numSteps;
-            },
-            onComplete: function(animation) {
-                window.setTimeout(function() {
-                    progress.value = 0;
-                }, 2000);
-            }
-        }
        }
     });
 }

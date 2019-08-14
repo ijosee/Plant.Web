@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
       selector: '[data-toggle=tooltip]', 
       trigger: 'hover click',
       html : true,
+      boundary : 'scrollParent'
       //template : '<div class="tooltip" role="tooltip"><div class="arrow"></div><a href="#" onclick="alert()"><i class="fas fa-trash text-gray-300"></i></a><div class="tooltip-inner"></div></div>'
     }
     );
@@ -70,6 +71,16 @@ document.addEventListener('DOMContentLoaded', function() {
         info.el.setAttribute('data-original-title',info.event._def.title+ ' [ <span class="span_event_id_'+info.event._def.publicId+'" > <i class="fas fa-trash text-gray-300"></i> </span> ] ');
 
       },
+      eventDragStart: function(info) {
+
+        $('[role="tooltip"]').tooltip('hide');
+
+      },
+      eventDragStop: function(info) {
+
+        $('[role="tooltip"]').tooltip('hide');
+
+      },
       eventClick : function(info) {
 
         if(info.el.style.borderColor === 'red'){
@@ -79,18 +90,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         var firstElement = document.getElementsByClassName('span_event_id_'+info.event._def.publicId)[0];
-        firstElement.onclick = function() { 
-          var data = {};
-          data.id = info.event._def.publicId;
-          deleteEvent(data); 
+        if(firstElement !== undefined){
+            firstElement.onclick = function() { 
+              var data = {};
+              data.id = info.event._def.publicId;
+              deleteEvent(data); 
 
-          info.el.remove();
-          firstElement.parentElement.parentElement.remove();
+              info.el.remove();
+              firstElement.parentElement.parentElement.remove();
 
-        };
-
+            };
+        }
       },
       eventDrop: function(info) {
+        $('[role="tooltip"]').tooltip('hide');
 
         var updateEventData = {};
         updateEventData.id = info.event._def.publicId;

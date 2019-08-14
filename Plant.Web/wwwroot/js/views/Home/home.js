@@ -179,7 +179,7 @@ function renderChart() {
     var dataYHigrometer ;
     var labels;
     if(datahigrometer !== undefined && datahigrometer !== null){
-     labels = datahigrometer.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ss'));
+     labels = datahigrometer.map(e => moment(e.x, 'DD-MM-YYYY HH:mm:ssZ'));
      dataYHigrometer= datahigrometer.map(e => +e.y);
     }
 
@@ -199,7 +199,6 @@ function renderChart() {
     if(datatemperature !== undefined && datatemperature !== null)
         dataYTemperature  = datatemperature.map(e => +e.y);
 
-    var progress = document.getElementById('animationProgress');
     var ctx = document.getElementById("myChartSensor").getContext('2d');
     new Chart(ctx, {
        type: 'line',
@@ -258,11 +257,11 @@ function renderChart() {
                 backgroundColor: "rgba(255, 150, 0, 0.05)",
                 borderColor: "rgba(255, 150, 0,1)",
                 pointRadius: 3,
-                pointBackgroundColor: "rgba(255, 150, 255, 1)",
+                pointBackgroundColor: "rgba(255, 150, 0, 1)",
                 pointBorderColor: "rgba(255, 150, 0, 1)",
                 pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(255, 150, 255, 1)",
-                pointHoverBorderColor: "rgba(255, 150, 255, 1)",
+                pointHoverBackgroundColor: "rgba(255, 150, 0, 1)",
+                pointHoverBorderColor: "rgba(255, 150, 0, 1)",
                 pointHitRadius: 10,
                 pointBorderWidth: 2,
             },
@@ -301,26 +300,6 @@ function renderChart() {
             display: true
         },
         animation: false,
-        //Boolean - If we want to override with a hard coded scale
-        scaleOverride: false,
-        //** Required if scaleOverride is true **
-        //Number - The number of steps in a hard coded scale
-        scaleSteps: 10,
-        //Number - The value jump in the hard coded scale
-        scaleStepWidth: 10,
-        //Number - The scale starting value
-        scaleStartValue: 0,
-        animation: {
-            duration: 2000,
-            onProgress: function(animation) {
-                 progress.value = animation.currentStep / animation.numSteps;
-            },
-            onComplete: function(animation) {
-                window.setTimeout(function() {
-                    progress.value = 0;
-                }, 2000);
-            }
-        }
        }
     });
 }
