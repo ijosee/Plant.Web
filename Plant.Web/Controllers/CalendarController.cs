@@ -145,6 +145,32 @@ namespace Plant.Web.Controllers {
         }
 
         [HttpGet]
+        public async Task<UpdateCalendarLogRs> DeleteEvent (DeleteCalendarLogRq request) {
+            var result = new UpdateCalendarLogRs ();
+            try {
+                _logger.LogDebug ("Getting sensor data from api");
+                var baseUrl = _configuration.GetSection ("PlantApi").GetSection ("BaseUrl").Value.ToString ();
+                _logger.LogInformation ($"ApiBaseUrl -> {baseUrl}");
+                var httpRequest = new HttpRequestMessage (HttpMethod.Delete,
+                    $"{baseUrl}api/Calendar/{request.id}");
+
+                var client = _clientFactory.CreateClient ();
+                var response = await client.SendAsync (httpRequest);
+
+                if (response.IsSuccessStatusCode) {
+                    result = await response.Content.ReadAsAsync<UpdateCalendarLogRs> ();
+                } else {
+                    result = null;
+                }
+
+            } catch (System.Exception ex) {
+                _logger.LogError (ex.Message);
+                throw;
+            }
+            return result;
+        }
+
+        [HttpGet]
         public async Task<List<FullCalendarRs>> GetLastWatering () {
             var result = new List<FullCalendarRs> ();
             try {

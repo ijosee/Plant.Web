@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+  $("body").tooltip(
+    { 
+      selector: '[data-toggle=tooltip]', 
+      trigger: 'hover click',
+      html : true,
+      //template : '<div class="tooltip" role="tooltip"><div class="arrow"></div><a href="#" onclick="alert()"><i class="fas fa-trash text-gray-300"></i></a><div class="tooltip-inner"></div></div>'
+    }
+    );
 
     var calendarEl = document.getElementById('calendar');
 
@@ -43,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title: title,
             start: arg.start,
             end: arg.end,
-            allDay: false
+            allDay: false,
           });
 
           var setEventData = {};
@@ -52,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
           setEventData.end = moment(arg.end).format('MM-DD-YYYY HH:mm:ss');
           setEventData.allDay = false;
 
-          setEvent(setEvent);
+          setEvent(setEventData);
         }
 
         calendar.unselect();
@@ -60,13 +67,28 @@ document.addEventListener('DOMContentLoaded', function() {
       eventRender: function(info) {
 
         info.el.setAttribute('data-toggle','tooltip');
-        info.el.setAttribute('data-original-title',info.event._def.title);
+        info.el.setAttribute('data-original-title',info.event._def.title+ ' [ <span class="span_event_id_'+info.event._def.publicId+'" > <i class="fas fa-trash text-gray-300"></i> </span> ] ');
 
       },
       eventClick : function(info) {
 
-        info.el.style.borderColor = 'red';
-        
+        if(info.el.style.borderColor === 'red'){
+          info.el.style.borderColor = 'transparent';
+        }else{
+          info.el.style.borderColor = 'red';
+        }
+
+        var firstElement = document.getElementsByClassName('span_event_id_'+info.event._def.publicId)[0];
+        firstElement.onclick = function() { 
+          var data = {};
+          data.id = info.event._def.publicId;
+          deleteEvent(data); 
+
+          info.el.remove();
+          firstElement.parentElement.parentElement.remove();
+
+        };
+
       },
       eventDrop: function(info) {
 
@@ -112,6 +134,18 @@ function updateEvent(data){
       ) {
 
         $.get('Calendar/updateEvent?id=' + data.id +'&start=' + data.start + '&end=' + data.end + '&title=' + data.title+ '&allDay=' + data.allDay, function () {
+        });
+
+    }
+
+}
+
+function deleteEvent(data){
+
+    if (data.id !== undefined
+      ) {
+
+        $.get('Calendar/deleteEvent?id=' + data.id , function () {
         });
 
     }
